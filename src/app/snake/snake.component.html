@@ -1,0 +1,47 @@
+<div style="position: fixed; color:red" [style.left.px]="X" [style.top.px]="Y">
+  <p>
+    {{SnakeHead}}
+  </p>
+</div>
+<div style="position: fixed; color:red" [style.left.px]="bulletX" [style.top.px]="bulletY">
+    <p>
+      {{bullet}}
+    </p>
+  </div>
+<div style="position: fixed; color:red" [style.left.px]="BodyX" [style.top.px]="Y">
+    <p>
+      {{SnakeBody}}
+    </p>
+  </div>
+<div *ngIf="!GameOver" style="position: fixed; color:green" [style.left.px]="appleX" [style.top.px]="appleY">
+  <p>
+    {{Apple}}
+  </p>
+</div>
+<div style="position: fixed; color:rgb(122, 4, 126); left:1100px;top:20px;">
+    <p class="lead">
+      Time: {{Timer}}  SCORE: {{Score}}
+    </p>
+  </div>
+
+  <div *ngIf="ShowTarget" style="left:520px;top:250px;position:fixed">
+    <h1> Kill Target: {{Target}} </h1>
+</div>
+<div *ngIf="GameOver" style="left:490px;top:250px;position:fixed">
+    <div *ngIf="TargetComplete" style="text-align:center">
+        <h1> Congratulations </h1>
+        <h3>Play again</h3>
+    </div>
+    <div *ngIf="!TargetComplete" style="text-align:center">
+        <h1> Level Failed </h1>
+        <h3>Try again</h3>
+    </div>
+</div>
+
+<div *ngIf="!ShowTarget" style="position: fixed; color:rgb(122, 4, 126); left:10px;top:17px;">
+    <p class="lead">Target: {{Target}} </p>
+</div>
+
+<div *ngIf="GameOver" style="position: fixed; text-align: center; color:rgb(122, 4, 126); left:530px;top:560px;">
+    <p class="lead">Press enter to retry </p>
+</div>
