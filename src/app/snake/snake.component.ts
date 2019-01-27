@@ -1,4 +1,4 @@
-import { Component, OnInit,HostListener } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-snake',
@@ -6,43 +6,41 @@ import { Component, OnInit,HostListener } from '@angular/core';
   styleUrls: ['./snake.component.css']
 })
 export class SnakeComponent implements OnInit {
+  SnakeHead = '⚈';
+  SnakeBody = '☉☉☉';
+  Apple = '⚫';
 
-  SnakeHead:string = "⚈";
-  SnakeBody:string = "☉☉☉";
-  Apple:string = "⚫";
+  // Snake coords
+  X: number;
+  Y: number;
+  BodyX: number;
+  BodyLen: number;
+  speed = 10;
+  SnakePosition: number;
 
- //Snake coords 
-  X:number;
-  Y:number;
-  BodyX:number;
-  BodyLen:number;
-  speed:number = 10;
-  SnakePosition:number;
+  // Score
+  Target = 5;
+  Score = 0;
+  ShowTarget = true;
+  TargetComplete = false;
+  GameOver = false;
 
-  //Score
-  Target:number = 5;
-  Score:number = 0;
-  ShowTarget:boolean = true;
-  TargetComplete:boolean = false;
-  GameOver:boolean = false;
+  // Timer
+  Timer = 33;
 
-  //Timer
-  Timer:number = 33;
+  // Apple coords
+  appleX: number;
+  appleY: number;
+  ApplePosition: number;
 
-  //Apple coords
-  appleX:number;
-  appleY:number;
-  ApplePosition:number;
+  // Fire controls
+  bullet = '⚙'; // ⚙ ⚊
+  bulletX: number;
+  bulletY: number;
 
-  //Fire controls
-  bullet:string = "⚙"; //⚙ ⚊
-  bulletX:number;
-  bulletY:number;
-
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
-
     this.Timer = 33;
     this.Target = 5;
     this.Score = 0;
@@ -52,40 +50,40 @@ export class SnakeComponent implements OnInit {
 
     this.X = 600;
     this.Y = 300;
-    this.BodyLen = (this.SnakeBody.length+1)*10;
+    this.BodyLen = (this.SnakeBody.length + 1) * 10;
     this.BodyX = 600 - this.BodyLen;
 
     this.bulletX = this.X;
     this.bulletY = this.Y;
 
-    this.SnakePosition = this.X*10000+this.Y;
-    this.ApplePosition = this.appleX*10000+this.appleY;
+    this.SnakePosition = this.X * 10000 + this.Y;
+    this.ApplePosition = this.appleX * 10000 + this.appleY;
 
     this.DisplayTarget();
     this.DynamicApple();
     this.CountDown();
   }
 
-  GoUp(){
+  GoUp() {
     this.SnakeEatsApple();
     this.FireTheApple();
     this.Y = this.Y - this.speed;
   }
 
-  GoDown(){
+  GoDown() {
     this.SnakeEatsApple();
     this.FireTheApple();
     this.Y = this.Y + this.speed;
   }
 
-  GoRight(){
+  GoRight() {
     this.SnakeEatsApple();
     this.FireTheApple();
     this.X = this.X + this.speed;
     this.BodyX = this.X - this.BodyLen;
   }
 
-  GoLeft(){
+  GoLeft() {
     this.SnakeEatsApple();
     this.FireTheApple();
     this.X = this.X - this.speed;
@@ -93,79 +91,84 @@ export class SnakeComponent implements OnInit {
   }
 
   async delay(ms: number) {
-    await new Promise(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
-}
+    await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log('fired'));
+  }
 
-DynamicApple(){
-  this.appleY = Math.floor(Math.abs(-400+ Math.random() * 1000));
-  this.appleX= Math.floor(80+ Math.random() * 1000);
-  this.delay(5000).then(any => {
-    this.DynamicApple();
-});
-}
+  DynamicApple() {
+    this.appleY = Math.floor(Math.abs(-400 + Math.random() * 1000));
+    this.appleX = Math.floor(80 + Math.random() * 1000);
+    this.delay(5000).then(any => {
+      this.DynamicApple();
+    });
+  }
 
-DisplayTarget(){
-  this.delay(3000).then(any => {
-    this.ShowTarget = false;
-});
-}
+  DisplayTarget() {
+    this.delay(3000).then(any => {
+      this.ShowTarget = false;
+    });
+  }
 
-CountDown(){
-  if(this.Timer){
-  this.delay(1000).then(any => {
-    this.Timer = this.Timer - 1;
-    this.CountDown();
-});}else{
-  this.GameOver = true;
-}
-}
+  CountDown() {
+    if (this.Timer) {
+      this.delay(1000).then(any => {
+        this.Timer = this.Timer - 1;
+        this.CountDown();
+      });
+    } else {
+      this.GameOver = true;
+    }
+  }
 
-  Fire(){
+  Fire() {
     this.bulletX = this.X;
-    let currx = this.X;
+    const currx = this.X;
     this.bulletY = this.Y;
-    for(let i = currx;i<=1400;i++){
+    this.PlayAudio();
+    for (let i = currx; i <= 1400; i++) {
       this.delay(300).then(any => {
         this.bulletX = i;
         console.log(i);
         this.FireTheApple();
-    });
+      });
     }
   }
 
-  FireTheApple(){
-    console.log(Math.abs(this.bulletX-this.appleX) + "---" + Math.abs(this.bulletY-this.appleY) );
-    if(Math.abs(this.bulletX-this.appleX)<=15 && Math.abs(this.bulletY-this.appleY)<=15){
-      this.appleY = Math.floor(Math.abs(-400+ Math.random() * 1000));
+  FireTheApple() {
+    console.log(Math.abs(this.bulletX - this.appleX) + '---' + Math.abs(this.bulletY - this.appleY));
+    if (Math.abs(this.bulletX - this.appleX) <= 15 && Math.abs(this.bulletY - this.appleY) <= 15) {
+      this.appleY = Math.floor(Math.abs(-400 + Math.random() * 1000));
       console.log(this.appleY);
 
-      this.appleX= Math.floor(80+ Math.random() * 1000);
+      this.appleX = Math.floor(80 + Math.random() * 1000);
       console.log(this.appleX);
 
       this.bulletX = this.X;
       this.bulletY = this.Y;
 
       this.Score = this.Score + 1;
-      if(this.Score>=this.Target)
+      if (this.Score >= this.Target) {
         this.TargetComplete = true;
+      }
     }
   }
 
-  SnakeEatsApple(){
-    this.SnakePosition = this.X*10000+this.Y;
-    this.ApplePosition = this.appleX*10000+this.appleY;
+  SnakeEatsApple() {
+    this.SnakePosition = this.X * 10000 + this.Y;
+    this.ApplePosition = this.appleX * 10000 + this.appleY;
 
-    if(Math.abs(this.X-this.appleX)<=15 && Math.abs(this.Y-this.appleY)<=15){
-      this.appleY = Math.floor(Math.abs(-400+ Math.random() * 1000));
+    if (Math.abs(this.X - this.appleX) <= 15 && Math.abs(this.Y - this.appleY) <= 15) {
+      this.appleY = Math.floor(Math.abs(-400 + Math.random() * 1000));
       console.log(this.appleY);
 
-      this.appleX= Math.floor(80+ Math.random() * 1000);
+      this.appleX = Math.floor(80 + Math.random() * 1000);
       console.log(this.appleX);
       this.Score = this.Score + 1;
-      if(this.Score>=this.Target)
+      if (this.Score >= this.Target) {
         this.TargetComplete = true;
+      }
     }
 
+    // TODO:  I got to clear this unused code
     // console.log(this.SnakePosition + "---" + this.ApplePosition + "---" +Math.abs(this.SnakePosition-this.ApplePosition));
 
     // if(Math.abs(this.SnakePosition-this.ApplePosition)<=41005){
@@ -178,24 +181,31 @@ CountDown(){
     // }
   }
 
+  PlayAudio() {
+    const audio = new Audio();
+    audio.src = '../../../assets/Pew_Pew.wav';
+    audio.load();
+    audio.play();
+  }
+
   @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) { 
-    if(event.keyCode===13){
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.keyCode === 13) { // Enter key
       this.ngOnInit();
     }
-    if(event.keyCode===32){
+    if (event.keyCode === 32) { // Space bar
       this.Fire();
     }
-    if(event.keyCode===37){
+    if (event.keyCode === 37) { // Left arrow
       this.GoLeft();
     }
-    if(event.keyCode===38){
+    if (event.keyCode === 38) { // Up arrow
       this.GoUp();
     }
-    if(event.keyCode===39){
+    if (event.keyCode === 39) { // Right arrow
       this.GoRight();
     }
-    if(event.keyCode===40){
+    if (event.keyCode === 40) { // Down arrow
       this.GoDown();
     }
   }
